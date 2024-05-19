@@ -1,4 +1,3 @@
-
 #define _CRT_SECURE_NO_WARNINGS
 
 #include<stdio.h>
@@ -59,7 +58,7 @@ int main(void) {
                     }
                     switch (choice1) {
 
-                    case NEW_USER:  new_user(&num_users, users, file_users);
+                    case NEW_USER:  new_user(&num_users, users,file_users);
 
                         break;
 

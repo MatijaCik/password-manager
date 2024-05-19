@@ -62,6 +62,7 @@ void search_password(const char* filename);
 //void delete_user_all(int* num_users, USER* users);
 bool validatePlaintext(const char* plaintext);
 bool is_allowed(char c);
-void abc_print(const char* filename, const USER* user);
+void abc_print(const char* filename, USER* user);
 USER* load_users(const char* file_users, int* num_users);
 void free_users(int* const num_users, USER* users);
+int count_lines_in_file(const char* filename);

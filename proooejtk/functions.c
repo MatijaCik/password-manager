@@ -151,6 +151,7 @@ void login_user(int* const num_users, USER* users) {
 
     char filename[MAX_NAME_LENGTH + 4]; // for file name + enough space for .txt
 
+    
     for (i = 0; i < *num_users; i++) {
         decryptXOR(users[i].password);
         if (strcmp(username, users[i].name) == 0 && strcmp(password, users[i].password) == 0) {

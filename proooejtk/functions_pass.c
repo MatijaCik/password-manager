@@ -283,15 +283,64 @@ int compare_names(const void* a, const void* b) {
     return strcmp(password_a->name_of_use, password_b->name_of_use);
 }
 //21
-void abc_print(const char* filename, const USER* user) {
-    FILE* file = fopen(filename, "r"); // Open file in read mode
+//void abc_print(const char* filename, const USER* user) {
+//    FILE* file = fopen(filename, "r");
+//    if (file == NULL) {
+//        perror("Error opening file");
+//        return;
+//    }
+//
+//    printf("Passwords for user '%s':\n", user->name);
+//
+//    PASS* passwords = malloc(user->num_passwords * sizeof(PASS));
+//    if (passwords == NULL) {
+//        perror("Memory allocation failed");
+//        fclose(file);
+//        return;
+//    }
+//
+//    int count = 0;
+//    while (count < user->num_passwords &&
+//        fscanf(file, "%99s %99s", passwords[count].name_of_use, passwords[count].password_stored) == 2) {
+//        decryptXOR(passwords[count].password_stored);
+//        replace_underscores_with_spaces(passwords[count].name_of_use);
+//        count++;
+//    }
+//
+//    if (ferror(file)) {
+//        perror("Error reading file");
+//        free(passwords);
+//        fclose(file);
+//        return;
+//    }
+//
+//    qsort(passwords, count, sizeof(PASS), compare_names);
+//
+//    for (int i = 0; i < count; i++) {
+//        printf("Usage: %s, Password: %s\n", passwords[i].name_of_use, passwords[i].password_stored);
+//    }
+//
+//    free(passwords);
+//    fclose(file);
+//}
+void abc_print(const char* filename, USER* user) {
+    user->num_passwords = count_lines_in_file(filename);
+    if (user->num_passwords <= 0) {
+        printf("No passwords to process or error occurred.\n");
+        return;
+    }
+
+    printf("User: %s, Number of passwords: %d\n", user->name, user->num_passwords);
+
+    FILE* file = fopen(filename, "r");
     if (file == NULL) {
         perror("Error opening file");
         return;
     }
 
     printf("Passwords for user '%s':\n", user->name);
-    PASS* passwords = malloc(user->num_passwords * sizeof(PASS)); // Dynamically allocate memory for passwords
+
+    PASS* passwords = malloc(user->num_passwords * sizeof(PASS));
     if (passwords == NULL) {
         perror("Memory allocation failed");
         fclose(file);
@@ -299,25 +348,66 @@ void abc_print(const char* filename, const USER* user) {
     }
 
     int count = 0;
-    while (count < user->num_passwords && fscanf(file, "%s %s", passwords[count].name_of_use, passwords[count].password_stored) == 2) {
-        decryptXOR(passwords[count].password_stored);
-        replace_underscores_with_spaces(passwords[count].name_of_use);
-        count++;
+    while (count < user->num_passwords) {
+        int res = fscanf(file, "%99s %99s", passwords[count].name_of_use, passwords[count].password_stored);
+        if (res == 2) {
+          //  printf("Read pair: %s %s\n", passwords[count].name_of_use, passwords[count].password_stored); // Debug print
+            decryptXOR(passwords[count].password_stored);
+            replace_underscores_with_spaces(passwords[count].name_of_use);
+           // printf("Processed pair: %s %s\n", passwords[count].name_of_use, passwords[count].password_stored); // Debug print
+            count++;
+        }
+        else if (res == EOF) {
+            if (feof(file)) {
+                printf("End of file reached after reading %d pairs.\n", count);
+            }
+            else {
+                perror("Error reading file");
+            }
+            break;
+        }
+        else {
+            printf("Unexpected format or error at line %d. fscanf returned %d\n", count + 1, res);
+            break;
+        }
     }
 
-    // Check if all passwords were read
-    if (count < user->num_passwords) {
-        perror("Error reading passwords");
-        fclose(file);
+    if (ferror(file)) {
+        perror("Error reading file");
         free(passwords);
+        fclose(file);
         return;
     }
 
-    // Print passwords
+   // printf("Sorting passwords...\n");
+    qsort(passwords, count, sizeof(PASS), compare_names);
+
+  //  printf("Printing sorted passwords...\n");
     for (int i = 0; i < count; i++) {
         printf("Usage: %s, Password: %s\n", passwords[i].name_of_use, passwords[i].password_stored);
     }
 
-    free(passwords); // Free dynamically allocated memory
+    free(passwords);
     fclose(file);
+   // printf("Finished processing.\n");
+}
+
+int count_lines_in_file(const char* filename) {
+    FILE* file = fopen(filename, "r");
+    if (file == NULL) {
+        perror("Error opening file for counting lines");
+        return -1;
+    }
+
+    int lines = 0;
+    char ch;
+    while (!feof(file)) {
+        ch = fgetc(file);
+        if (ch == '\n') {
+            lines++;
+        }
+    }
+
+    fclose(file);
+    return lines;
 }
