@@ -123,25 +123,28 @@ USER* load_users(const char* file_users, int* num_users) {
     char name[MAX_NAME_LENGTH];
     char password[MAX_PASS_LENGTH];
     while (fscanf(file, "%49s %19s", name, password) == 2) {
-        decryptXOR(password);
+      //  decryptXOR(password); (dissabled because it messes up log in decryption)
         users[*num_users].name = _strdup(name);
         users[*num_users].password = _strdup(password);
         users[*num_users].num_passwords = 0;
         (*num_users)++;
     }
-
+   
     fclose(file);
     return users;
 }
 
 
 void login_user(int* const num_users, USER* users) {
-
+    int i = 0;
+    /*for (i = 0; i < *num_users; i++) {  (its quick check up to see what kidn of passwords u recieve)
+        printf("User %s password: %s \n", users[i].name, users[i].password);
+    }*/
     char input2[100];
 
     char username[MAX_NAME_LENGTH];
     char password[MAX_PASS_LENGTH];
-    int i = 0;
+   
 
     printf("Enter username: ");
     scanf("%49s", username);
@@ -150,15 +153,16 @@ void login_user(int* const num_users, USER* users) {
     scanf("%19s", password);
 
     char filename[MAX_NAME_LENGTH + 4]; // for file name + enough space for .txt
-
-    
+   
     for (i = 0; i < *num_users; i++) {
+       // printf("User %s password: %s \n", users[i].name, users[i].password); quick check
         decryptXOR(users[i].password);
+       // printf("User %s password: %s \n", users[i].name, users[i].password); quick check
         if (strcmp(username, users[i].name) == 0 && strcmp(password, users[i].password) == 0) {
             printf("Login successful.\n");
             system("pause");
             snprintf(filename, sizeof(filename), "%s.txt", username);
-
+            
 
             if (_access(filename, 0) == 0) {
 
@@ -172,12 +176,11 @@ void login_user(int* const num_users, USER* users) {
             break;
         }
     }
-
     if (i == *num_users) {
         printf("Invalid username or password.\n");
         return;
     }
-
+   
 
     while (1) {
         system("cls");
@@ -309,7 +312,7 @@ void exit_manager(int* const num_users, USER* users) {
     char answer = 0;
 
     printf("Do you really want to exit the password manager?\n");
-    printf("If you choose Y or y, all files will be deleted.\n");
+    printf("If you choose Y or y, you will exit program\n");
     printf("If you do not want to exit, choose N or n.\n");
 
 
