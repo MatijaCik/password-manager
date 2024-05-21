@@ -137,9 +137,9 @@ USER* load_users(const char* file_users, int* num_users) {
 
 void login_user(int* const num_users, USER* users) {
     int i = 0;
-    /*for (i = 0; i < *num_users; i++) {  (its quick check up to see what kidn of passwords u recieve)
+    for (i = 0; i < *num_users; i++) {  //(its quick check up to see what kidn of passwords u recieve)
         printf("User %s password: %s \n", users[i].name, users[i].password);
-    }*/
+    }
     char input2[100];
 
     char username[MAX_NAME_LENGTH];
@@ -155,11 +155,12 @@ void login_user(int* const num_users, USER* users) {
     char filename[MAX_NAME_LENGTH + 4]; // for file name + enough space for .txt
    
     for (i = 0; i < *num_users; i++) {
-       // printf("User %s password: %s \n", users[i].name, users[i].password); quick check
+        printf("User %s password: %s \n", users[i].name, users[i].password); //quick check
         decryptXOR(users[i].password);
-       // printf("User %s password: %s \n", users[i].name, users[i].password); quick check
+        printf("User %s password: %s \n", users[i].name, users[i].password); //quick check
         if (strcmp(username, users[i].name) == 0 && strcmp(password, users[i].password) == 0) {
-            printf("Login successful.\n");
+            printf("Login successful.\n"); 
+            encryptXOR(users[i].password); 
             system("pause");
             snprintf(filename, sizeof(filename), "%s.txt", username);
             
@@ -185,7 +186,7 @@ void login_user(int* const num_users, USER* users) {
     while (1) {
         system("cls");
 
-        printf("Unesite izbor:\n1. Enter password you want to save and its usage.\n2. Write out passwords.\n3. Delete password. \n4. Search name of use.\n5. Write out passwords name of use alphabetically. \n6. Log out.\n");
+        printf("Unesite izbor:\n1. Enter password you want to save and its usage.\n2. Write out passwords.\n3. Delete password.\n4. Change password by name of use \n5. Search name of use.\n6. Write out passwords name of use alphabetically. \n7. Log out.\n");
 
         if (fgets(input2, sizeof(input2), stdin)) {
             char* endptr;
@@ -217,6 +218,8 @@ void login_user(int* const num_users, USER* users) {
                     case WRITEOUT_PASSWORDS: writeout_passwords(filename, &users[i]);  break;
 
                     case DELETE_PASSWORD: delete_password(filename, &users[i]); break;
+
+                    case CHANGE_PASSWORD: change_password(filename,&users[i]); break;
 
                     case SEARCH_PASSWORD: search_password(filename); break;
 

@@ -38,6 +38,7 @@ enum Choice2 {
     ADD_PASSWORD = 1,
     WRITEOUT_PASSWORDS,
     DELETE_PASSWORD,
+    CHANGE_PASSWORD,
     SEARCH_PASSWORD,
     ABC_PRINT,
     LOG_OUT
@@ -66,3 +67,4 @@ void abc_print(const char* filename, USER* user);
 USER* load_users(const char* file_users, int* num_users);
 void free_users(int* const num_users, USER* users);
 int count_lines_in_file(const char* filename);
+void change_password(const char* filename, USER* user);

@@ -411,3 +411,78 @@ int count_lines_in_file(const char* filename) {
     fclose(file);
     return lines;
 }
+
+void change_password(const char* filename, USER* user) {
+    char usage[MAX_NAME_LENGTH];
+
+    printf("Enter the usage of the password you want to change: ");
+    scanf(" %49[^\n]", usage);
+
+    FILE* file = fopen(filename, "r");
+    if (file == NULL) {
+        perror("Error opening file");
+        return;
+    }
+
+    FILE* temp_file = fopen("temp.txt", "w");
+    if (temp_file == NULL) {
+        perror("Error opening temporary file");
+        fclose(file);
+        return;
+    }
+
+    PASS password = { 0 };
+    int found = 0;
+
+    while (fscanf(file, "%s %s", password.name_of_use, password.password_stored) == 2) {
+        replace_underscores_with_spaces(password.name_of_use);
+        decryptXOR(password.password_stored);
+
+        if (strcmp(password.name_of_use, usage) == 0) {
+            printf("Password found:\n");
+            printf("Usage: %s, Password: %s\n", password.name_of_use, password.password_stored);
+            found = 1;
+
+            char new_password[MAX_PASS_LENGTH];
+            printf("Enter new password: ");
+            do {
+                scanf(" %19[^\n]", new_password);
+                while (getchar() != '\n');
+
+                if (strchr(new_password, ' ') != NULL) {
+                    printf("Spaces are not allowed in passwords! Please try again.\n");
+                } else if (!validatePlaintext(new_password)) {
+                    printf("Error: Password contains disallowed characters.\n");
+                } else {
+                    break;
+                }
+            } while (1);
+
+            strcpy(password.password_stored, new_password);
+        }
+
+        encryptXOR(password.password_stored);
+        replace_spaces_with_underscores(password.name_of_use);
+        fprintf(temp_file, "%s %s\n", password.name_of_use, password.password_stored);
+    }
+
+    fclose(file);
+    fclose(temp_file);
+
+    if (found) {
+        if (remove(filename) != 0) {
+            perror("Error removing original file");
+            return;
+        }
+
+        if (rename("temp.txt", filename) != 0) {
+            perror("Error renaming file");
+            return;
+        }
+
+        printf("Password changed successfully.\n");
+    } else {
+        remove("temp.txt");
+        printf("Password for '%s' was not found.\n", usage);
+    }
+}
