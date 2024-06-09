@@ -152,12 +152,12 @@ void login_user(int* const num_users, USER* users) {
     printf("Enter password: ");
     scanf("%19s", password);
 
-    char filename[MAX_NAME_LENGTH + 4]; // for file name + enough space for .txt
+    char filename[MAX_NAME_LENGTH + 4]; // +4 for .txt
    
     for (i = 0; i < *num_users; i++) {
-        printf("User %s password: %s \n", users[i].name, users[i].password); //quick check
+       // printf("User %s password: %s \n", users[i].name, users[i].password); //quick check
         decryptXOR(users[i].password);
-        printf("User %s password: %s \n", users[i].name, users[i].password); //quick check
+       // printf("User %s password: %s \n", users[i].name, users[i].password); //quick check
         if (strcmp(username, users[i].name) == 0 && strcmp(password, users[i].password) == 0) {
             printf("Login successful.\n"); 
             encryptXOR(users[i].password); 
@@ -187,18 +187,18 @@ void login_user(int* const num_users, USER* users) {
         system("cls");
 
         printf("Unesite izbor:\n1. Enter password you want to save and its usage.\n2. Write out passwords.\n3. Delete password.\n4. Change password by name of use \n5. Search name of use.\n6. Write out passwords name of use alphabetically. \n7. Log out.\n");
-
+        //used for protection from spaces
         if (fgets(input2, sizeof(input2), stdin)) {
             char* endptr;
             long choice2 = strtol(input2, &endptr, 10);
 
-            // Ensure that endptr is at the end of the number and any remaining characters are whitespace
+            
             if (endptr != input2) {
                 while (isspace((unsigned char)*endptr)) {
                     endptr++;
                 }
                 if (*endptr == '\0' || *endptr == '\n') {
-                    // Clear input buffer if there is remaining content
+                   
                     while (*endptr != '\n' && *endptr != '\0') {
                         endptr++;
                     }
@@ -345,7 +345,7 @@ void create_users_file(const char* const file_users) {
 }
 
 
-
+//previous idea for project , didnt work too well
 //void delete_user_all(int* const num_users, USER* users) {
 //
 //    int i = 0;

@@ -8,7 +8,7 @@
 #define MAX_PASS_LENGTH 30
 #define MAX_FILENAME_LENGTH (MAX_NAME_LENGTH + 5)
 
-#define MAX_PASSWORD_LENGTH 100
+
 #define XOR_KEY 0xAA //changable value
 // 3
 static char file_users[MAX_FILENAME_LENGTH] = "users_all.txt";

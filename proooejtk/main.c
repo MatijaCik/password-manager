@@ -46,13 +46,13 @@ int main(void) {
             char* endptr;
             choice1 = strtol(input1, &endptr, 10);
 
-            // Ensure that endptr is at the end of the number and any remaining characters are whitespace
+           
             if (endptr != input1) {
                 while (isspace((unsigned char)*endptr)) {
                     endptr++;
                 }
                 if (*endptr == '\0' || *endptr == '\n') {
-                    // Clear input buffer if there is remaining content
+              
                     while (*endptr != '\n' && *endptr != '\0') {
                         endptr++;
                     }
@@ -89,7 +89,7 @@ int main(void) {
             //}
         }
         else {
-            // Error reading input
+           
             printf("Error reading input. Please try again.\n");
             system("pause");
         }

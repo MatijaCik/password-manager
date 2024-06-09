@@ -56,7 +56,7 @@ void add_password(const char* filename, USER* user) {
 
 
 
-    // ecrypting password
+   
     encryptXOR(user->passwords[user->num_passwords].password_stored);
 
     user->num_passwords++;
@@ -139,7 +139,7 @@ void delete_password(const char* filename, USER* user) {
         return;
     }
 
-    // creating temp file that will be in place of old one after password is deleted and rewrited
+    //temp file w out deleted password
     FILE* temp_file = fopen("temp.txt", "w");
     if (temp_file == NULL) {
         perror("Error opening temporary file");
@@ -179,7 +179,7 @@ void delete_password(const char* filename, USER* user) {
                 return;
             }
         }
-        // writing passwords to temporary file
+        // temp file for passwords 
         fprintf(temp_file, "%s %s\n", password.name_of_use, password.password_stored);
     }
 
@@ -194,7 +194,7 @@ void delete_password(const char* filename, USER* user) {
             return;
         }
 
-        // Renaming file to original name
+        // naming it back to original
         if (rename("temp.txt", filename) != 0) {
             perror("Error renaming file");
             return;
@@ -257,10 +257,10 @@ void search_password(const char* filename) {
 }
 
 bool is_allowed(char c) {
-    //defined characters that are allowed in password , those are able to be handled by xor encryption
+   //allowed characters because encryption , some characters cant get encrypted by xor
     const char* allowedChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789 !#$%&/()=?*' ";
 
-    // chech if its allowed character
+   
     return strchr(allowedChars, c) != NULL;
 }
 
@@ -282,47 +282,8 @@ int compare_names(const void* a, const void* b) {
     const PASS* password_b = (const PASS*)b;
     return strcmp(password_a->name_of_use, password_b->name_of_use);
 }
-//21
-//void abc_print(const char* filename, const USER* user) {
-//    FILE* file = fopen(filename, "r");
-//    if (file == NULL) {
-//        perror("Error opening file");
-//        return;
-//    }
-//
-//    printf("Passwords for user '%s':\n", user->name);
-//
-//    PASS* passwords = malloc(user->num_passwords * sizeof(PASS));
-//    if (passwords == NULL) {
-//        perror("Memory allocation failed");
-//        fclose(file);
-//        return;
-//    }
-//
-//    int count = 0;
-//    while (count < user->num_passwords &&
-//        fscanf(file, "%99s %99s", passwords[count].name_of_use, passwords[count].password_stored) == 2) {
-//        decryptXOR(passwords[count].password_stored);
-//        replace_underscores_with_spaces(passwords[count].name_of_use);
-//        count++;
-//    }
-//
-//    if (ferror(file)) {
-//        perror("Error reading file");
-//        free(passwords);
-//        fclose(file);
-//        return;
-//    }
-//
-//    qsort(passwords, count, sizeof(PASS), compare_names);
-//
-//    for (int i = 0; i < count; i++) {
-//        printf("Usage: %s, Password: %s\n", passwords[i].name_of_use, passwords[i].password_stored);
-//    }
-//
-//    free(passwords);
-//    fclose(file);
-//}
+
+
 void abc_print(const char* filename, USER* user) {
     user->num_passwords = count_lines_in_file(filename);
     if (user->num_passwords <= 0) {
@@ -351,10 +312,10 @@ void abc_print(const char* filename, USER* user) {
     while (count < user->num_passwords) {
         int res = fscanf(file, "%99s %99s", passwords[count].name_of_use, passwords[count].password_stored);
         if (res == 2) {
-          //  printf("Read pair: %s %s\n", passwords[count].name_of_use, passwords[count].password_stored); // Debug print
+          //  printf("Read pair: %s %s\n", passwords[count].name_of_use, passwords[count].password_stored); // using it for debug , to see any mistakes
             decryptXOR(passwords[count].password_stored);
             replace_underscores_with_spaces(passwords[count].name_of_use);
-           // printf("Processed pair: %s %s\n", passwords[count].name_of_use, passwords[count].password_stored); // Debug print
+           // printf("Processed pair: %s %s\n", passwords[count].name_of_use, passwords[count].password_stored); // using it for debug , to see any mistakes
             count++;
         }
         else if (res == EOF) {
@@ -379,17 +340,17 @@ void abc_print(const char* filename, USER* user) {
         return;
     }
 
-   // printf("Sorting passwords...\n");
+   // sorts passwords
     qsort(passwords, count, sizeof(PASS), compare_names);
 
-  //  printf("Printing sorted passwords...\n");
+  //printing them sorted
     for (int i = 0; i < count; i++) {
         printf("Usage: %s, Password: %s\n", passwords[i].name_of_use, passwords[i].password_stored);
     }
 
     free(passwords);
     fclose(file);
-   // printf("Finished processing.\n");
+
 }
 
 int count_lines_in_file(const char* filename) {
