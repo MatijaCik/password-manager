@@ -36,10 +36,13 @@ void new_user(int* const num_users, USER* users, const char* const file_users) {
         do {
             printf("Enter your name: ");
             scanf(" %49[^\n]", new_username);
-            while (getchar() != '\n');
+            while (getchar() != '\n'); // Clear input buffer
 
             if (strchr(new_username, ' ') != NULL) {
                 printf("Spaces are not allowed in usernames! Please try again.\n");
+            }
+            else if (!is_alpha_string(new_username)) {
+                printf("Only English letters are allowed in usernames! Please try again.\n");
             }
             else {
                 break;
@@ -123,13 +126,13 @@ USER* load_users(const char* file_users, int* num_users) {
     char name[MAX_NAME_LENGTH];
     char password[MAX_PASS_LENGTH];
     while (fscanf(file, "%49s %19s", name, password) == 2) {
-      //  decryptXOR(password); (dissabled because it messes up log in decryption)
+        //  decryptXOR(password); (dissabled because it messes up log in decryption)
         users[*num_users].name = _strdup(name);
         users[*num_users].password = _strdup(password);
         users[*num_users].num_passwords = 0;
         (*num_users)++;
     }
-   
+
     fclose(file);
     return users;
 }
@@ -137,33 +140,53 @@ USER* load_users(const char* file_users, int* num_users) {
 
 void login_user(int* const num_users, USER* users) {
     int i = 0;
-    for (i = 0; i < *num_users; i++) {  //(its quick check up to see what kidn of passwords u recieve)
-        printf("User %s password: %s \n", users[i].name, users[i].password);
-    }
+    //for (i = 0; i < *num_users; i++) {  //(its quick check up to see what kidn of passwords u recieve)
+    //    printf("User %s password: %s \n", users[i].name, users[i].password);
+    //}
     char input2[100];
 
     char username[MAX_NAME_LENGTH];
     char password[MAX_PASS_LENGTH];
-   
 
-    printf("Enter username: ");
-    scanf("%49s", username);
+    do {
+        printf("Enter your username: ");
+        scanf(" %49[^\n]", username);
+        while (getchar() != '\n');
 
-    printf("Enter password: ");
-    scanf("%19s", password);
+        if (strchr(username, ' ') != NULL) {
+            printf("Spaces are not allowed in usernames! Please try again.\n");
+        }
+        else {
+            break;
+        }
+    } while (1);
 
+
+
+    do {
+        printf("Enter your password: ");
+        scanf(" %19[^\n]", password);
+        while (getchar() != '\n');
+
+        if (strchr(password, ' ') != NULL) {
+            printf("Spaces are not allowed in passwords! Please try again.\n");
+        }
+        else {
+            break;
+        }
+    } while (1);
     char filename[MAX_NAME_LENGTH + 4]; // +4 for .txt
-   
+
     for (i = 0; i < *num_users; i++) {
-       // printf("User %s password: %s \n", users[i].name, users[i].password); //quick check
+        // printf("User %s password: %s \n", users[i].name, users[i].password); //quick check
         decryptXOR(users[i].password);
-       // printf("User %s password: %s \n", users[i].name, users[i].password); //quick check
+        // printf("User %s password: %s \n", users[i].name, users[i].password); //quick check
         if (strcmp(username, users[i].name) == 0 && strcmp(password, users[i].password) == 0) {
-            printf("Login successful.\n"); 
-            encryptXOR(users[i].password); 
+            printf("Login successful.\n");
+            encryptXOR(users[i].password);
             system("pause");
             snprintf(filename, sizeof(filename), "%s.txt", username);
-            
+
 
             if (_access(filename, 0) == 0) {
 
@@ -181,7 +204,7 @@ void login_user(int* const num_users, USER* users) {
         printf("Invalid username or password.\n");
         return;
     }
-   
+
 
     while (1) {
         system("cls");
@@ -192,13 +215,13 @@ void login_user(int* const num_users, USER* users) {
             char* endptr;
             long choice2 = strtol(input2, &endptr, 10);
 
-            
+
             if (endptr != input2) {
                 while (isspace((unsigned char)*endptr)) {
                     endptr++;
                 }
                 if (*endptr == '\0' || *endptr == '\n') {
-                   
+
                     while (*endptr != '\n' && *endptr != '\0') {
                         endptr++;
                     }
@@ -219,7 +242,7 @@ void login_user(int* const num_users, USER* users) {
 
                     case DELETE_PASSWORD: delete_password(filename, &users[i]); break;
 
-                    case CHANGE_PASSWORD: change_password(filename,&users[i]); break;
+                    case CHANGE_PASSWORD: change_password(filename, &users[i]); break;
 
                     case SEARCH_PASSWORD: search_password(filename); break;
 
@@ -257,6 +280,7 @@ void delete_user(int* const num_users, USER* users) {
     printf("Do you really want to delete user: %s? (Y/n)\n", username);
     scanf(" %c", &answer);
 
+
     if (answer == 'Y' || answer == 'y') {
         for (i = 0; i < *num_users; i++) {
             if (strcmp(username, users[i].name) == 0) {
@@ -280,6 +304,43 @@ void delete_user(int* const num_users, USER* users) {
                 break;
             }
         }
+
+        // Update users_all.txt file
+        if (found) {
+            FILE* file = fopen("users_all.txt", "r");
+            if (file == NULL) {
+                perror("Failed to open users_all.txt");
+                return;
+            }
+
+            char line[MAX_NAME_LENGTH + MAX_NAME_LENGTH + 2];
+            char temp_filename[MAX_FILENAME_LENGTH];
+            snprintf(temp_filename, MAX_FILENAME_LENGTH, "temp_users_all.txt");
+            FILE* temp_file = fopen(temp_filename, "w");
+            if (temp_file == NULL) {
+                perror("Failed to open temporary file");
+                fclose(file);
+                return;
+            }
+
+            while (fgets(line, sizeof(line), file)) {
+                char file_username[MAX_NAME_LENGTH];
+                sscanf(line, "%s", file_username);
+                if (strcmp(file_username, username) != 0) {
+                    fputs(line, temp_file);
+                }
+            }
+
+            fclose(file);
+            fclose(temp_file);
+
+            if (remove("users_all.txt") != 0) {
+                perror("Failed to delete users_all.txt");
+            }
+            else if (rename(temp_filename, "users_all.txt") != 0) {
+                perror("Failed to rename temporary file");
+            }
+        }
     }
     else if (answer == 'N' || answer == 'n') {
         printf("Username isn't deleted.\n");
@@ -289,7 +350,6 @@ void delete_user(int* const num_users, USER* users) {
     if (found == 0) {
         printf("User '%s' not found.\n", username);
     }
-
 }
 
 void display_users(int* const num_users, USER* users) {
@@ -362,3 +422,13 @@ void create_users_file(const char* const file_users) {
 //
 //    }
 //}
+
+bool is_alpha_string(const char* str) {
+    while (*str) {
+        if (!((*str >= 'A' && *str <= 'Z') || (*str >= 'a' && *str <= 'z'))) {
+            return false;
+        }
+        str++;
+    }
+    return true;
+}

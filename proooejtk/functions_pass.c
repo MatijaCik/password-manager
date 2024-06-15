@@ -56,7 +56,7 @@ void add_password(const char* filename, USER* user) {
 
 
 
-   
+
     encryptXOR(user->passwords[user->num_passwords].password_stored);
 
     user->num_passwords++;
@@ -257,10 +257,10 @@ void search_password(const char* filename) {
 }
 
 bool is_allowed(char c) {
-   //allowed characters because encryption , some characters cant get encrypted by xor
+    //allowed characters because encryption , some characters cant get encrypted by xor
     const char* allowedChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789 !#$%&/()=?*' ";
 
-   
+
     return strchr(allowedChars, c) != NULL;
 }
 
@@ -312,10 +312,10 @@ void abc_print(const char* filename, USER* user) {
     while (count < user->num_passwords) {
         int res = fscanf(file, "%99s %99s", passwords[count].name_of_use, passwords[count].password_stored);
         if (res == 2) {
-          //  printf("Read pair: %s %s\n", passwords[count].name_of_use, passwords[count].password_stored); // using it for debug , to see any mistakes
+            //  printf("Read pair: %s %s\n", passwords[count].name_of_use, passwords[count].password_stored); // using it for debug , to see any mistakes
             decryptXOR(passwords[count].password_stored);
             replace_underscores_with_spaces(passwords[count].name_of_use);
-           // printf("Processed pair: %s %s\n", passwords[count].name_of_use, passwords[count].password_stored); // using it for debug , to see any mistakes
+            // printf("Processed pair: %s %s\n", passwords[count].name_of_use, passwords[count].password_stored); // using it for debug , to see any mistakes
             count++;
         }
         else if (res == EOF) {
@@ -340,10 +340,10 @@ void abc_print(const char* filename, USER* user) {
         return;
     }
 
-   // sorts passwords
+    // sorts passwords
     qsort(passwords, count, sizeof(PASS), compare_names);
 
-  //printing them sorted
+    //printing them sorted
     for (int i = 0; i < count; i++) {
         printf("Usage: %s, Password: %s\n", passwords[i].name_of_use, passwords[i].password_stored);
     }
@@ -412,9 +412,11 @@ void change_password(const char* filename, USER* user) {
 
                 if (strchr(new_password, ' ') != NULL) {
                     printf("Spaces are not allowed in passwords! Please try again.\n");
-                } else if (!validatePlaintext(new_password)) {
+                }
+                else if (!validatePlaintext(new_password)) {
                     printf("Error: Password contains disallowed characters.\n");
-                } else {
+                }
+                else {
                     break;
                 }
             } while (1);
@@ -442,7 +444,8 @@ void change_password(const char* filename, USER* user) {
         }
 
         printf("Password changed successfully.\n");
-    } else {
+    }
+    else {
         remove("temp.txt");
         printf("Password for '%s' was not found.\n", usage);
     }

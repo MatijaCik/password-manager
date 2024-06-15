@@ -68,3 +68,4 @@ USER* load_users(const char* file_users, int* num_users);
 void free_users(int* const num_users, USER* users);
 int count_lines_in_file(const char* filename);
 void change_password(const char* filename, USER* user);
+bool is_alpha_string(const char* str);

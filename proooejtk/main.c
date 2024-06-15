@@ -46,19 +46,19 @@ int main(void) {
             char* endptr;
             choice1 = strtol(input1, &endptr, 10);
 
-           
+
             if (endptr != input1) {
                 while (isspace((unsigned char)*endptr)) {
                     endptr++;
                 }
                 if (*endptr == '\0' || *endptr == '\n') {
-              
+
                     while (*endptr != '\n' && *endptr != '\0') {
                         endptr++;
                     }
                     switch (choice1) {
 
-                    case NEW_USER:  new_user(&num_users, users,file_users);
+                    case NEW_USER:  new_user(&num_users, users, file_users);
 
                         break;
 
@@ -89,7 +89,7 @@ int main(void) {
             //}
         }
         else {
-           
+
             printf("Error reading input. Please try again.\n");
             system("pause");
         }
