@@ -4,14 +4,12 @@
 #include<stdlib.h>
 #include"header.h"
 #include <ctype.h>
-#include<io.h>
+
 int main(void) {
 
     static enum Choice1 choice1;
     int num_users = 0;
     USER* users = NULL;
-
-
 
     char input1[100];
 
@@ -39,7 +37,7 @@ int main(void) {
         printf("1. New user\n");
         printf("2. Login existing user\n");
         printf("3. Delete existing user\n");
-        printf("4. Search user\n");
+        printf("4. Show all users\n");
         printf("5. Exit manager\n");
 
         if (fgets(input1, sizeof(input1), stdin)) {
@@ -77,7 +75,7 @@ int main(void) {
                     system("pause");
                 }
                 else {
-                    // Invalid input
+                   
                     printf("Invalid input. Please enter a valid integer.\n");
                     system("pause");
                 }
@@ -96,55 +94,3 @@ int main(void) {
     }
     return 0;
 }
-
-
-
-
-//while (1) {
-//	system("cls");
-//	printf("unesite broj odabira izbornika :\n1. new user\n2. login_existing_user\n3. delete_existing_user\n4. search_user\n5. exit_manager\n");
-//
-//	if (fgets(input, sizeof(input), stdin)) {
-//		char* endptr;
-//		choice1 = strtol(input, &endptr, 10);
-//
-//		// Ensure that endptr is at the end of the number and any remaining characters are whitespace
-//		if (endptr != input) {
-//			while (isspace((unsigned char)*endptr)) {
-//				endptr++;
-//			}
-//			if (*endptr == '\0' || *endptr == '\n') {
-//
-//			}
-//		}
-//	}
-//	else {
-//		// Invalid input
-//		printf("Invalid input. Please enter a valid integer.\n");
-//		continue;
-//	}
-//	while (getchar() != '\n');  // Clear the input buffer
-//	system("pause");
-//
-//	//9
-//	switch (choice1) {
-//
-//	case NEW_USER:  new_user(&num_users, users);  break;
-//
-//	case LOGIN_USER:  login_user(&num_users, users); break;
-//
-//	case DELETE_USER:  delete_user(&num_users, users); break;
-//
-//	case DISPLAY_USER: display_users(&num_users, users);  break;
-//
-//	case EXIT_MANAGER: exit_manager(&num_users, users);
-//
-//	default:  printf("Enter new choice :\n");  break;
-//
-//	}
-//	system("pause");
-//
-//}
-//
-//return 0;
-//}

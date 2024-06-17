@@ -2,17 +2,17 @@
 
 #include <stdbool.h>
 
-#define MAX_USERS 3
+#define MAX_USERS 5
 #define MAX_PASSWORDS 10
 #define MAX_NAME_LENGTH 50
 #define MAX_PASS_LENGTH 30
 #define MAX_FILENAME_LENGTH (MAX_NAME_LENGTH + 5)
 
 
-#define XOR_KEY 0xAA //changable value
+#define XOR_KEY 0xAA 
 // 3
 static char file_users[MAX_FILENAME_LENGTH] = "users_all.txt";
-extern int number_of_pass;
+extern int number_of_pass;  //7
 typedef struct {
     char name_of_use[MAX_NAME_LENGTH];
     char password_stored[MAX_PASS_LENGTH];
@@ -68,4 +68,4 @@ USER* load_users(const char* file_users, int* num_users);
 void free_users(int* const num_users, USER* users);
 int count_lines_in_file(const char* filename);
 void change_password(const char* filename, USER* user);
-bool is_alpha_string(const char* str);
+static inline bool is_alpha_string(const char* str);

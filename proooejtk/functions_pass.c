@@ -1,11 +1,9 @@
-
 #define _CRT_SECURE_NO_WARNINGS
 
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
 #include"header.h"
-#include<io.h>
 #include <stdbool.h>
 
 
@@ -27,8 +25,6 @@ void add_password(const char* filename, USER* user) {
     scanf(" %49[^\n]", user->passwords[user->num_passwords].name_of_use);
     replace_spaces_with_underscores(user->passwords[user->num_passwords].name_of_use);
     while (getchar() != '\n');
-
-
 
     for (int i = 0; i < user->num_passwords; i++) {
         if (strcmp(user->passwords[user->num_passwords].name_of_use, user->passwords[i].name_of_use) == 0) {
@@ -52,10 +48,6 @@ void add_password(const char* filename, USER* user) {
             break;
         }
     } while (1);
-
-
-
-
 
     encryptXOR(user->passwords[user->num_passwords].password_stored);
 

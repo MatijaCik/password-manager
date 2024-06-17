@@ -1,11 +1,9 @@
-
 #define _CRT_SECURE_NO_WARNINGS
 
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
 #include"header.h"
-#include<io.h>
 #include <ctype.h>
 //5
 USER user;
@@ -42,7 +40,7 @@ void new_user(int* const num_users, USER* users, const char* const file_users) {
                 printf("Spaces are not allowed in usernames! Please try again.\n");
             }
             else if (!is_alpha_string(new_username)) {
-                printf("Only English letters are allowed in usernames! Please try again.\n");
+                printf("Only letters are allowed , please try again.\n");
             }
             else {
                 break;
@@ -305,7 +303,7 @@ void delete_user(int* const num_users, USER* users) {
             }
         }
 
-        // Update users_all.txt file
+        // Updating users_all.txt file because of deleted user
         if (found) {
             FILE* file = fopen("users_all.txt", "r");
             if (file == NULL) {
@@ -423,7 +421,8 @@ void create_users_file(const char* const file_users) {
 //    }
 //}
 
-bool is_alpha_string(const char* str) {
+//8
+inline bool is_alpha_string(const char* str) {
     while (*str) {
         if (!((*str >= 'A' && *str <= 'Z') || (*str >= 'a' && *str <= 'z'))) {
             return false;
